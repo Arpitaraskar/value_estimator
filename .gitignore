@@ -1,0 +1,46 @@
+# Virtual Environment
+venv/
+.venv/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Environment Variables
+.env
+
+# Logs
+*.log
+backend/logs/
+
+# Coverage Reports
+backend/.coverage
+htmlcov/
+.pytest_cache/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Build Files
+build/
+dist/
+*.egg-info/
+
+#ML models
+backend/app/ml/house_model.joblib
+backend/app/ml/house_features.joblib
+
+#database
+
+backend/data/*.db
