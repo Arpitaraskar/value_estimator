@@ -190,3 +190,113 @@ Integration Testing
 Difference between Unit vs Integration testing
 Added integration_test.py
 Now your project has 8 passing tests 🎉
+
+-------------------------------------
+#13 passed github action
+
+Sprint 13 – Continuous Integration (GitHub Actions)
+Goal
+
+Automate testing so every code change is verified before it is merged.
+
+Completed
+Created GitHub Actions workflow.
+Configured workflow to trigger on every git push.
+Set up Python 3.11 in the CI environment.
+Installed project dependencies from requirements.txt.
+Executed the complete pytest test suite automatically.
+Successfully ran all tests in GitHub Actions.
+Problems Faced
+1. Large model file
+
+GitHub rejected the push because:
+
+house_model.joblib > 100 MB
+
+Solution
+
+Removed the model from the repository.
+Added it to .gitignore.
+Modified the application to load the model only when required.
+2. Module import error
+ModuleNotFoundError: No module named 'app'
+
+Cause
+
+The GitHub Actions workflow was running from the wrong directory.
+
+Solution
+
+Updated the workflow so pytest runs inside the correct project directory.
+
+3. Missing ML model during CI
+FileNotFoundError:
+house_model.joblib
+
+Cause
+
+The trained model is intentionally not stored in GitHub.
+
+Solution
+
+Used mocking in the integration tests so GitHub Actions does not require the real model.
+
+4. Integration test failure
+
+The integration test initially attempted to load the real ML model.
+
+Solution
+
+Patched predict_price() during the test so the API returns a fake prediction while verifying endpoint behavior.
+
+What I Learned
+Continuous Integration (CI)
+GitHub Actions workflow structure
+YAML syntax
+GitHub-hosted runners
+Automated dependency installation
+Automated test execution
+Why production projects mock external dependencies during CI
+Difference between local testing and CI testing
+Debugging CI failures using GitHub Actions logs
+Result
+
+✅ GitHub automatically runs the complete test suite on every push.
+
+✅ All tests pass successfully.
+
+✅ The project now has an automated Continuous Integration pipeline.
+
+
+### Sprint 14 – Docker
+Goal
+
+Containerize the FastAPI application.
+
+Completed
+Created a production-ready Dockerfile.
+Configured .dockerignore to exclude unnecessary files.
+Built the Docker image successfully.
+Ran the application inside a Docker container.
+Exposed the application using port mapping (8000:8000).
+Verified:
+Home endpoint (/)
+Swagger Docs (/docs)
+OpenAPI schema (/openapi.json)
+Prediction endpoint (POST /predict)
+Debugged and fixed a Docker build issue caused by a missing COPY . . instruction.
+Concepts Learned
+Difference between Docker Image and Docker Container.
+Purpose of FROM, WORKDIR, COPY, RUN, and CMD.
+Docker layer caching.
+Purpose of .dockerignore.
+Difference between 0.0.0.0 (server bind address) and localhost (client access).
+Port mapping with docker run -p host:container.
+Real Debugging Experience
+Investigated ModuleNotFoundError: No module named 'app'.
+Verified project structure.
+Added app/__init__.py.
+Identified that the application source code was never copied into the image.
+Fixed the issue by adding:
+COPY . .
+Successfully rebuilt and verified the container.
