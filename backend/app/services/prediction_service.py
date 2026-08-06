@@ -1,3 +1,7 @@
+from sqlalchemy.orm import Session
+
+from app.database.models import Prediction
+from app.repository.prediction_repository import save_prediction
 from fastapi import HTTPException
 from app.ml.predictor import predict_price
 from app.core.config import PRICE_MULTIPLIER, AVERAGE_ERROR
@@ -6,7 +10,7 @@ from app.core.logger import logger
 import time
 
 
-def predict_house_price(house):
+def predict_house_price(db:Session,house):
 
     # Convert the HouseFeatures object into a normal Python dictionary
     house_data = house.model_dump()
@@ -26,8 +30,20 @@ def predict_house_price(house):
         prediction = predict_price(house_data)
 
         # Convert model prediction into actual USD price
-        price_usd = prediction * PRICE_MULTIPLIER
+        price_usd = round(prediction * PRICE_MULTIPLIER)
 
+        prediction_record = Prediction(
+    MedInc=house.MedInc,
+    HouseAge=house.HouseAge,
+    AveRooms=house.AveRooms,
+    AveBedrms=house.AveBedrms,
+    Population=house.Population,
+    AveOccup=house.AveOccup,
+    Latitude=house.Latitude,
+    Longitude=house.Longitude,
+    predicted_price=price_usd
+)
+        save_prediction(db, prediction_record)
         end_time = time.time()
 
         execution_time = end_time - start_time

@@ -1,11 +1,13 @@
 from fastapi import FastAPI
-
+from app.database.db import init_db
 from app.api.prediction_routes import router
 
 app = FastAPI(
     title="APP_NAME",
     version="1.0.0"
 )
+
+init_db()
 
 app.include_router(router)
 

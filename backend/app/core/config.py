@@ -14,3 +14,8 @@ AVERAGE_ERROR = 39000
 # API Information
 APP_NAME = "California House Prediction API"
 APP_VERSION = "1.0.0"
+
+# Database
+DATABASE_NAME = "prediction.db"
+DATABASE_PATH = BASE_DIR.parent / "data" / DATABASE_NAME
+DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
