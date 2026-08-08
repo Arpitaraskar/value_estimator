@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 def test_prediction(test_client):
 
     house_data = {
@@ -11,7 +13,12 @@ def test_prediction(test_client):
         "Longitude": -125
     }
 
-    response = test_client.post(
+    with patch(
+        "app.services.prediction_service.predict_price",
+        return_value=3.25
+    ):
+
+       response = test_client.post(
         "/predict",
         json=house_data
     )
