@@ -8,3 +8,12 @@ def save_prediction(db: Session, prediction: Prediction):
     db.refresh(prediction)
 
     return prediction
+
+def get_predictions(
+    db: Session,
+    skip: int = 0,
+    limit: int = 10
+):
+    return db.query(Prediction).order_by(
+        Prediction.created_at.desc()
+    ).offset(skip).limit(limit).all()

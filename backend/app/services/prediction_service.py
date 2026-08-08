@@ -1,7 +1,10 @@
 from sqlalchemy.orm import Session
 
 from app.database.models import Prediction
-from app.repository.prediction_repository import save_prediction
+from app.repository.prediction_repository import (
+    save_prediction,
+    get_predictions
+)
 from fastapi import HTTPException
 from app.ml.predictor import predict_price
 from app.core.config import PRICE_MULTIPLIER, AVERAGE_ERROR
@@ -72,4 +75,9 @@ def predict_house_price(db:Session,house):
         )
 
         
-       
+def get_prediction_history(
+    db: Session,
+    skip: int = 0,
+    limit: int = 10
+):
+    return get_predictions(db, skip, limit)
