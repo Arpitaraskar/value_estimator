@@ -16,3 +16,9 @@ class PredictionResponse(BaseModel):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class PredictionResult(BaseModel):
+    predicted_price: str
+    predicted_price_short: str
+    confidence_range: str

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from app.schemas.prediction_schema import PredictionResult
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, Query
 from app.database.dependencies import get_db
@@ -14,7 +15,7 @@ router = APIRouter(
     tags=["House Prediction"]
 )
 
-@router.post("/predict")
+@router.post("/predict",response_model=PredictionResult)
 def predict(
     house: HouseFeatures,
     db: Session = Depends(get_db)
