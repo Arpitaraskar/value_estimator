@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends,Query,Request
 from app.schemas.prediction_schema import PredictionResult
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends, Query
 from app.database.dependencies import get_db
 from app.schemas.house_schema import HouseFeatures
+from app.core.rate_limiter import limiter
 from app.schemas.prediction_schema import PredictionResponse
 from app.services.prediction_service import (
     predict_house_price,
@@ -15,12 +15,15 @@ router = APIRouter(
     tags=["House Prediction"]
 )
 
-@router.post("/predict",response_model=PredictionResult)
+@router.post("/predict", response_model=PredictionResult)
+@limiter.limit("20/minute")
 def predict(
+    request: Request,
     house: HouseFeatures,
     db: Session = Depends(get_db)
 ):
     return predict_house_price(db, house)
+
 
 @router.get(
     "/predictions",
