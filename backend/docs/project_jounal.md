@@ -300,3 +300,273 @@ Identified that the application source code was never copied into the image.
 Fixed the issue by adding:
 COPY . .
 Successfully rebuilt and verified the container.
+
+##### Sprint 15 – Database & Prediction History
+Goal
+
+Persist prediction results in a database so previous predictions can be stored and retrieved instead of existing only in memory.
+
+Completed
+Added SQLite database.
+Added SQLAlchemy ORM.
+Created database configuration.
+Created database models.
+Created Prediction model.
+Added database initialization.
+Created database dependency for FastAPI.
+Created prediction repository.
+Added save_prediction() functionality.
+Saved every successful prediction to the database.
+Created prediction-history service.
+Added:
+GET /predictions
+Verified prediction records were persisted successfully.
+Added created_at timestamp to prediction records.
+Architecture
+POST /predict
+      ↓
+Prediction Route
+      ↓
+Prediction Service
+      ↓
+ML Predictor
+      ↓
+Prediction Result
+      ↓
+SQLAlchemy ORM
+      ↓
+SQLite Database
+
+For retrieving history:
+
+GET /predictions
+      ↓
+Prediction Route
+      ↓
+Prediction Service
+      ↓
+Repository
+      ↓
+SQLAlchemy
+      ↓
+SQLite
+Concepts Learned
+SQLite.
+SQLAlchemy.
+ORM (Object Relational Mapping).
+Database models.
+Database sessions.
+Repository pattern.
+Database dependencies in FastAPI.
+CRUD concepts.
+Persisting ML prediction results.
+Separation between service and repository layers.
+Result
+
+The application can now store prediction results permanently and retrieve previous predictions through an API endpoint.
+
+### sprint 16 – API Response Schemas
+Goal
+
+Separate database models from API response structures and make API responses explicitly validated.
+
+Completed
+Created app/schemas/prediction_schema.py.
+Created PredictionResponse Pydantic schema.
+Defined the expected fields returned by the prediction-history API.
+Added datetime validation for created_at.
+Used:
+model_config = ConfigDict(from_attributes=True)
+Applied PredictionResponse to the /predictions endpoint.
+Concepts Learned
+Difference between database models and API schemas.
+Pydantic response models.
+Response validation.
+from_attributes=True.
+Why APIs should explicitly define their response structure.
+Separation of database layer and API layer.
+Result
+
+The /predictions endpoint now returns data through a validated response schema instead of exposing database objects directly.
+
+Sprint 16 – Pagination & Validation
+Goal
+
+Prevent the prediction-history endpoint from returning an unnecessarily large number of database records in a single request.
+
+Completed
+
+Added pagination to:
+
+GET /predictions
+
+Using:
+
+skip
+limit
+
+Example:
+
+/predictions?skip=0&limit=10
+
+Added validation:
+
+skip: int = Query(0, ge=0)
+limit: int = Query(10, ge=1, le=100)
+Validation Rules
+skip >= 0
+1 <= limit <= 100
+
+Tested invalid requests:
+
+limit=101  → 422
+limit=0    → 422
+skip=-1    → 422
+Concepts Learned
+Pagination.
+Query parameters.
+FastAPI Query.
+Input validation.
+HTTP 422 Unprocessable Entity.
+Why pagination protects database performance.
+Why APIs should enforce reasonable request limits.
+Result
+
+The prediction-history API now supports controlled, paginated database queries.
+
+## Sprint 17 – Automated API Testing Expansion
+Goal
+
+Expand the automated test suite as new production features are added.
+
+Completed
+
+Added tests for:
+
+Prediction endpoint.
+Prediction history.
+Pagination validation.
+Health endpoint.
+Error handling.
+Integration testing.
+Fixtures.
+Parameterized inputs.
+Rate limiting.
+
+Test suite progressed from the earlier 8 tests to:
+
+14 passed
+
+before rate limiting was added.
+
+Concepts Learned
+Regression testing.
+Test organization.
+Testing new features without breaking existing functionality.
+Using pytest as a safety net during refactoring.
+### Sprint 18 – Rate Limiting
+Goal
+
+Protect the expensive ML prediction endpoint from excessive requests and prevent unnecessary model/database processing.
+
+Completed
+
+Installed:
+
+slowapi
+
+Created:
+
+app/core/rate_limiter.py
+
+Configured a shared limiter using the client's IP address.
+
+Connected the limiter to FastAPI in:
+
+app/main.py
+
+Applied rate limiting specifically to:
+
+POST /predict
+
+using:
+
+@limiter.limit("20/minute")
+
+Added:
+
+request: Request
+
+to the prediction endpoint so SlowAPI can identify the client.
+
+Rate Limit
+20 requests / minute / client IP
+
+When the limit is exceeded:
+
+HTTP 429 Too Many Requests
+Testing
+
+Created:
+
+tests/test_rate_limit.py
+
+The test sends 21 prediction requests and verifies that the request exceeding the limit returns:
+
+429
+Final Test Result
+15 passed
+1 warning
+
+The warning is a Starlette/httpx deprecation warning and does not cause test failure.
+
+Concepts Learned
+API rate limiting.
+SlowAPI.
+Middleware.
+Client/IP-based request limiting.
+HTTP 429 Too Many Requests.
+Protecting expensive ML endpoints.
+Automated testing of rate limits.
+Result
+
+The /predict endpoint is now protected against excessive requests.
+
+## sprint 19
+
+Project Cleanup & Test Isolation
+Goal
+
+Improve test reliability and remove unnecessary project files.
+
+Completed
+Fixed test database isolation using an in-memory SQLite database.
+Overrode FastAPI's get_db dependency during tests.
+Verified tests do not modify the real data/prediction.db.
+Removed duplicate test files.
+Removed empty explore.py.
+Removed empty docker-compose.yml.
+Removed unnecessary old test code while keeping learning comments.
+Reduced test suite from 15 tests to 13 tests.
+Verified all 13 tests pass.
+Problems Faced
+Tests were connected to the real database.
+requirements.txt had previously been saved as UTF-16 on Windows.
+Duplicate test files existed.
+Empty unused files existed.
+Solutions
+Created a separate sqlite:// in-memory test database.
+Used StaticPool and FastAPI dependency overrides.
+Regenerated requirements.txt as UTF-8.
+Removed duplicate and unused files.
+Re-ran the complete test suite after cleanup.
+Verification
+Prediction history test: 1 passed
+Full test suite: 13 passed
+Real data/prediction.db: unchanged after testing
+What I Learned
+Why test isolation is important.
+How FastAPI dependency overrides work.
+Difference between a real application database and a test database.
+How to safely clean duplicate/dead code.
+Why file encoding matters for GitHub and Docker.

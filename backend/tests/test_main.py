@@ -7,67 +7,6 @@ import pytest
 client = TestClient(app)
 
 
-
-#unit testing
-# def test_home():
-#     response = client.get("/")
-
-#     assert response.status_code == 200
-
-# def test_predict_success():
-
-#     response = client.post(
-#         "/predict",
-#         json={
-#             "MedInc": 1,
-#             "HouseAge": 10,
-#             "AveRooms": 5,
-#             "AveBedrms": 1,
-#             "Population": 100,
-#             "AveOccup": 2,
-#             "Latitude": 34,
-#             "Longitude": -118
-#         }
-#     )
-
-#     assert response.status_code == 200
-
-#     data = response.json()
-
-#     assert "predicted_price" in data
-#     assert "predicted_price_short" in data
-#     assert "confidence_range" in data
-# def test_predict_invalid_input():
-
-#     response = client.post(
-#         "/predict",
-#         json={
-#             "MedInc": "abc",
-#             "HouseAge": 10,
-#             "AveRooms": 5,
-#             "AveBedrms": 1,
-#             "Population": 100,
-#             "AveOccup": 2,
-#             "Latitude": 34,
-#             "Longitude": -118
-#         }
-#     )
-
-#     assert response.status_code == 422
-
-#     data = response.json()
-
-#     print(data)
-
-#     assert "detail" in data
-
-#     assert data["detail"][0]["loc"] == ["body", "MedInc"]
-#     assert data["detail"][0]["type"] == "float_parsing"
-#     assert data["detail"][0]["input"] == "abc"
-
-
-
-
 #mocking testing
 @patch("app.services.prediction_service.predict_price")
 def test_predict_success(mock_predict,sample_house):
