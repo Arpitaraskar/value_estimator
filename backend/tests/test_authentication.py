@@ -1,9 +1,10 @@
 from fastapi.testclient import TestClient
 from app.main import app
-import os
+from unittest.mock import patch
 
 
 def test_missing_api_key():
+
     client = TestClient(app)
 
     response = client.post(
@@ -24,6 +25,7 @@ def test_missing_api_key():
 
 
 def test_invalid_api_key():
+
     client = TestClient(app)
 
     client.headers.update({
@@ -47,10 +49,14 @@ def test_invalid_api_key():
     assert response.status_code == 401
 
 
-def test_valid_api_key(test_client, sample_house):
+@patch("app.services.prediction_service.predict_price")
+def test_valid_api_key(mock_predict, test_client, sample_house):
+
+    mock_predict.return_value = 2.5
+
     response = test_client.post(
         "/predict",
         json=sample_house
     )
 
-    assert response.status_code != 401
+    assert response.status_code == 200
