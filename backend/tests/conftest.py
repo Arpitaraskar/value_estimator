@@ -1,5 +1,5 @@
 import pytest
-
+import os
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -48,11 +48,14 @@ def test_client(db):
     app.dependency_overrides[get_db] = override_get_db
 
     with TestClient(app) as client:
+
+        client.headers.update({
+            "X-API-Key": os.getenv("API_KEY")
+        })
+
         yield client
 
-    app.dependency_overrides.clear()
-
-
+app.dependency_overrides.clear()
 @pytest.fixture
 def sample_house():
     return {

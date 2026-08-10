@@ -1,9 +1,5 @@
 import pytest
-from fastapi.testclient import TestClient
-from app.main import app
 from unittest.mock import patch
-
-client = TestClient(app)
 
 
 @pytest.fixture
@@ -19,12 +15,18 @@ def sample_house():
         "Longitude": -118
     }
 
+
 @pytest.mark.parametrize(
     "income",
     [1, 3, 5]
 )
 @patch("app.services.prediction_service.predict_price")
-def test_predict_different_income(mock_predict, sample_house, income):
+def test_predict_different_income(
+    mock_predict,
+    sample_house,
+    income,
+    test_client
+):
 
     # Mock ML model prediction
     mock_predict.return_value = 3.25
@@ -36,7 +38,7 @@ def test_predict_different_income(mock_predict, sample_house, income):
     test_house["MedInc"] = income
 
     # Call API
-    response = client.post(
+    response = test_client.post(
         "/predict",
         json=test_house
     )

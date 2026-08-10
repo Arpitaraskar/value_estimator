@@ -1,20 +1,14 @@
-
-
-#mock test
+# mock test
 
 from unittest.mock import patch
-from fastapi.testclient import TestClient
-from app.main import app
-
-client = TestClient(app)
 
 
 @patch("app.services.prediction_service.predict_price")
-def test_predict_integration(mock_predict):
+def test_predict_integration(mock_predict, test_client):
 
     mock_predict.return_value = 2.5
 
-    response = client.post(
+    response = test_client.post(
         "/predict",
         json={
             "MedInc": 1,

@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.database.dependencies import get_db
 from app.schemas.house_schema import HouseFeatures
 from app.core.rate_limiter import limiter
+from app.core.security import verify_api_key
 from app.schemas.prediction_schema import PredictionResponse
 from app.services.prediction_service import (
     predict_house_price,
@@ -20,7 +21,8 @@ router = APIRouter(
 def predict(
     request: Request,
     house: HouseFeatures,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    api_key: str = Depends(verify_api_key)
 ):
     return predict_house_price(db, house)
 
@@ -32,6 +34,7 @@ def predict(
 def prediction_history(
     skip: int = Query(0,ge=0),
     limit: int =Query(10,ge=1,le=100),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    api_key: str = Depends(verify_api_key)
 ):
     return get_prediction_history(db, skip, limit)

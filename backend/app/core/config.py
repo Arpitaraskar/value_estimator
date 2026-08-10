@@ -25,6 +25,10 @@ AVERAGE_ERROR = int(
 APP_NAME = os.getenv("APP_NAME", "California House Prediction API")
 APP_VERSION = os.getenv("APP_VERSION", "1.0.0")
 
+# API Authentication
+
+API_KEY = os.getenv("API_KEY")
+
 # Database
 DATABASE_NAME = os.getenv(
     "DATABASE_NAME",
