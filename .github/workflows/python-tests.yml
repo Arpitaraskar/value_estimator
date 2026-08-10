@@ -7,6 +7,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      API_KEY: ${{ secrets.API_KEY }}
+
     defaults:
       run:
         working-directory: backend
@@ -24,6 +27,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Check API key
+        run: |
+          if [ -z "$API_KEY" ]; then
+            echo "API_KEY is NOT available"
+            exit 1
+          else
+            echo "API_KEY is available"
+          fi
 
       - name: Run tests
         run: python -m pytest -s
