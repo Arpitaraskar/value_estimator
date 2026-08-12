@@ -37,9 +37,7 @@ build/
 dist/
 *.egg-info/
 
-#ML models
-backend/app/ml/house_model.joblib
-backend/app/ml/house_features.joblib
+
 
 #database
 
