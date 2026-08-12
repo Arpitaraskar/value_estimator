@@ -37,8 +37,6 @@ build/
 dist/
 *.egg-info/
 
-
-
 #database
 
 backend/data/*.db
