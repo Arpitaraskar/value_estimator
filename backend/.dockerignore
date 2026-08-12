@@ -10,3 +10,5 @@ docs/
 
 *.pyc
 *.pyo
+
+.env

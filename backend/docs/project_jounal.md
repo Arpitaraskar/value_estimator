@@ -580,3 +580,46 @@ Why file encoding matters for GitHub and Docker.
 ✅ Commit created
 ✅ Changes pushed to GitHub
 ✅ Local and remote main are synchronized
+
+## spritn 20
+16/16 tests passing locally
+✅ API authentication tested
+✅ Integration testing isolated from .joblib
+✅ Rate limiting tested
+✅ Pagination tested
+✅ Prediction history tested
+✅ CI workflow configured
+✅ API key stored as GitHub Secret
+✅ .env remains local
+✅ No .joblib committed
+✅ Git working tree clean
+✅ GitHub already up to date
+
+sprint 21
+
+Docker image builds
+✅ .env is not included in image
+✅ .joblib files are not included in image
+✅ Model is mounted separately
+✅ Model is loaded lazily
+✅ API key is passed through environment variables
+✅ Wrong/missing API key → 401
+✅ Correct API key → 200
+✅ /, /docs, /health work
+✅ Prediction works inside Docker
+
+
+cker verification complete
+
+We have verified:
+
+Image builds successfully.
+.env is not baked into the image.
+API key is supplied at runtime.
+Model is not baked into the image.
+Model is supplied through a read-only volume.
+/predict works with the API key.
+/health works.
+/docs works.
+Tests pass locally: 16/16.
+GitHub Actions/CI is already configured.
