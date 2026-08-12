@@ -623,3 +623,14 @@ Model is supplied through a read-only volume.
 /docs works.
 Tests pass locally: 16/16.
 GitHub Actions/CI is already configured.
+
+## sprint 21
+
+Docker dependency installation issue
+Docker image build issue
+Docker container startup verification
+Model availability inside Docker
+API authentication verification
+UTF-16 encoding problem
+Git binary-file detection problem
+Git line-ending configuration
